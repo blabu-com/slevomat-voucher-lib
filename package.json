@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bunyan": "^1.8.12",
     "superagent": "^5.0.5",
     "typescript": "^3.4.5"
   },
