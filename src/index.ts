@@ -1,9 +1,11 @@
 import superagent from 'superagent'
 import { Result } from './types'
 import * as Logger from 'bunyan'
+import { VoucherAction, ErrorCodes } from './enums'
 
 const BASE_URL = 'https://www.slevomat.cz/api'
 
+export { Result, ErrorCodes }
 export default class SlevomatClient {
   private token: string
   private logger: Logger
@@ -14,25 +16,22 @@ export default class SlevomatClient {
   }
 
   public async voucherApply (code: string): Promise<Result> {
-    let result
-    try {
-      result = await superagent
-        .get(`${BASE_URL}/voucherapply`)
-        .query({ code, token: this.token })
-    } catch (err) {
-      this.logger.info({ err }, 'failed to apply voucher')
-    }
-    return result.body
+    return this.voucherAction(code, VoucherAction.VoucherApply)
   }
 
   public async voucherCheck (code: string): Promise<Result> {
+    return this.voucherAction(code, VoucherAction.VoucherCheck)
+  }
+
+  private async voucherAction (code: string, action: VoucherAction): Promise<Result> {
     let result
     try {
       result = await superagent
-        .get(`${BASE_URL}/vouchercheck`)
+        .get(`${BASE_URL}/${action}`)
         .query({ code, token: this.token })
     } catch (err) {
-      this.logger.info({ err }, 'failed to check voucher')
+      this.logger.error({ err }, `${action} failed`)
+      result = err.response
     }
     return result.body
   }

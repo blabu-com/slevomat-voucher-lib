@@ -5,9 +5,9 @@ export interface Result {
 }
 
 interface Data {
-  token: string
-  code: string
-  voucherData: VoucherData
+  token?: string
+  code?: string
+  voucherData?: VoucherData
 }
 interface VoucherData {
   id: number
